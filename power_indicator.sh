@@ -34,4 +34,4 @@ fi
 echo "$WATTS W $EXTRA_CHARS | size=11 font=ComicSansMS color=#eeee22"
 echo "---"
 # echo "Kernel: $(uname -r) | iconName=system-settings iconName=applications-development"
-echo "klawisz sutka | bash='sh -c /home/mateusz/programowanie/skrypciory/sutek_ps2_lewa.sh' onclick=bash terminal=false iconName=input-touchpad"
+echo "<your action here> | bash='sh -c /home/mateusz/programowanie/skrypciory/sutek_ps2_lewa.sh' onclick=bash terminal=false iconName=input-touchpad"
