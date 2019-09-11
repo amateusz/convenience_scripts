@@ -1,15 +1,16 @@
-# intended to work with kArgos (bitbar). (output formatting)
-
 #!/bin/bash
 EXTRA_CHARS=''
 IDLE=true
 
-for BATTERY in BAT0 BAT1; do
+# count them batteries
+BATTERY_COUNT=$(ls /sys/class/power_supply | grep BAT[0-99] | wc -w)
+
+for BATTERY in `seq -f "BAT%g" 0 $(( $BATTERY_COUNT - 1 ))` ; do
 	STATUS=$(cat /sys/class/power_supply/$BATTERY/status)
 	if [ -e /sys/class/power_supply/$BATTERY/power_now ]; then
 		UWATTS=$(cat /sys/class/power_supply/$BATTERY/power_now)
 	else
-		UWATTS=$(( `cat /sys/class/power_supply/$BATTERY/voltage_now` * `cat /sys/class/power_supply/$BATTERY/current_now` ))
+		UWATTS=$(( `cat /sys/class/power_supply/$BATTERY/voltage_now` * `cat /sys/class/power_supply/$BATTERY/current_now` / 1000000 ))
 	fi
 	case $STATUS in
 		"Discharging")
