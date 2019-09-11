@@ -17,9 +17,9 @@ this one crucial button. _No more SSHing a RPi only to shut it down even though 
 It uses BCM numbering (wiringPi -g).  
 My default actions are shutdown and reboot.  
  My preffered GPIO is some on CSI connector (I²C line?).  
-  My preffered button is iPhone 3GS home button glued to the USB casing.
+  My preffered button is iPhone 3GS home button glued to the USB casing.  
 \<to be done\>
 
 ---
 
-## many others
+## many others are coming
