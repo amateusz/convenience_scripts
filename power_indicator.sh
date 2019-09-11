@@ -9,7 +9,7 @@ for BATTERY in BAT0 BAT1; do
 	if [ -e /sys/class/power_supply/$BATTERY/power_now ]; then
 		UWATTS=$(cat /sys/class/power_supply/$BATTERY/power_now)
 	else
-		UWATTS=$(( `cat /sys/class/power_supply/$BATTERY/voltage_now` + `cat /sys/class/power_supply/$BATTERY/current_now` ))
+		UWATTS=$(( `cat /sys/class/power_supply/$BATTERY/voltage_now` * `cat /sys/class/power_supply/$BATTERY/current_now` ))
 	fi
 	case $STATUS in
 		"Discharging")
