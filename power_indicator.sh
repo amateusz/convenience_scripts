@@ -1,6 +1,10 @@
 #!/bin/bash
 EXTRA_CHARS=''
 IDLE=true
+PLAIN=false
+
+# args. switch output between kArgos and plain (for general use, e.g. xfce which lacks argos)
+[ ! -z "$1" ] && [ "$1" == "--plain" ] && PLAIN=true
 
 # count them batteries
 BATTERY_COUNT=$(ls /sys/class/power_supply | grep BAT[0-99] | wc -w)
@@ -32,7 +36,13 @@ else
 	WATTS=$(bc -l <<< "scale=1; $UWATTS/1000000.0")
 	WATTS=$(tr . , <<< $WATTS)
 fi
-echo "$WATTS W $EXTRA_CHARS | size=11 font=ComicSansMS color=#eeee22"
-echo "---"
-# echo "Kernel: $(uname -r) | iconName=system-settings iconName=applications-development"
-echo "<your action here> | bash='sh -c /home/mateusz/programowanie/skrypciory/sutek_ps2_lewa.sh' onclick=bash terminal=false iconName=input-touchpad"
+
+# printing output
+if $PLAIN; then
+	echo "$WATTS W $EXTRA_CHARS"
+else 
+	echo "$WATTS W $EXTRA_CHARS | size=11 font=ComicSansMS color=#eeee22"
+	echo "---"
+	# echo "Kernel: $(uname -r) | iconName=system-settings iconName=applications-development"
+	echo "klawisz sutka | bash='sh -c /home/mateusz/programowanie/skrypciory/sutek_ps2_lewa.sh' onclick=bash terminal=false iconName=input-touchpad"
+fi
