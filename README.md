@@ -6,5 +6,5 @@ returns current power draw in Watts. Auto detects multiple batteries. Indicates 
 <img src="https://user-images.githubusercontent.com/9356928/64735861-b0314c00-d4e9-11e9-86f2-732897c5aca1.png" align=center width="60%"></img> 
 * ## shutdown_button.sh
 raspberry pi ACPI necessity. Adds this one crucial button. It can trigger different actions based on the duration.
-uses BCM numbering (wiringPi -g). My default actions are shutdown and reboot. No more SSHing a RPi only to shut it down even though you have physical access to it.
+uses BCM numbering (wiringPi -g). My default actions are shutdown and reboot. No more SSHing a RPi only to shut it down even though you have physical access to it. My preffered GPIO is some on CSI connector (I²C line?). My preffered button is iPhone 3GS home button glued to the USB casing.
 <to be done>
