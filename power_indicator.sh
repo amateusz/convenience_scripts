@@ -4,7 +4,7 @@ IDLE=true
 PLAIN=false
 
 # args. switch output between kArgos and plain (for general use, e.g. xfce which lacks argos)
-[ ! -z "$1" ] && [ "$1" == "--plain" ] && PLAIN=true
+[ ! -z "$1" ] && [ "$1" = "--plain" ] && PLAIN=true
 
 # count them batteries
 BATTERY_COUNT=$(ls /sys/class/power_supply | grep BAT[0-99] | wc -w)
@@ -23,7 +23,7 @@ for BATTERY in `seq -f "BAT%g" 0 $(( $BATTERY_COUNT - 1 ))` ; do
 		"Charging")
 			IDLE=false
 			EXTRA_CHARS='↑'
-			if [ "$BATTERY" = 'BAT0' ]; then EXTRA_CHARS="$EXTRA_CHARS wewn."; fi
+			if [ "$BATTERY" = 'BAT0' && $BATTERY_COUNT -gt 1 ]; then EXTRA_CHARS="$EXTRA_CHARS wewn."; fi # "wewn." stands for "internal" in Polish
 			break;;
 		"Unknown")
 			continue;;
