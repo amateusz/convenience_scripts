@@ -22,4 +22,11 @@ My default actions are shutdown and reboot.
 
 ---
 
+## shairport-sync_installer.sh
+Shairport-sync is a great project turning any linux computer into a AirPlay receiver.
+I happened to install it so many times (trying to make it work), that this might be useful
+https://github.com/mikebrady/shairport-sync
+
+---
+
 ## many others are coming
