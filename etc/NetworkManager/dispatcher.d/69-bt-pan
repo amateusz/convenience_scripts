@@ -1,0 +1,60 @@
+#!/bin/bash
+export LC_ALL=C
+
+TARGET_BT_PAN_CONN_UUID=ce9db873-469b-46f3-8fe5-067d3b993056
+
+IF=$1
+STATUS=$2
+UUID=$CONNECTION_UUID
+
+# grep filters connection types, leaving all that are disabling BT PAN
+ACTIVE_TYPES_WITH_PRIORITY_CMD="nmcli -t -f TYPE c show --active | grep -v -E 'loopback|bridge|bluetooth'"
+
+case "$UUID" in
+  $TARGET_BT_PAN_CONN_UUID)
+    # if target conn is turned down, ignore any custom logic
+    logger -s "$0: toggled target BT PAN conn, ignore logic"
+    ;;
+  *)
+    case "$STATUS" in
+      up)
+        # if there is any new connection (except for BT PAN)
+        # disconnect BT PAN
+        logger -s "$0: $IF up"
+        if [[ $(eval "$ACTIVE_TYPES_WITH_PRIORITY_CMD" | wc -l) -gt 0 ]]; then
+          logger -s "$0: some other iface with priority is active"
+          if $(nmcli -t -f UUID c show --active | grep -q $TARGET_BT_PAN_CONN_UUID); then
+            # BT PAN is active, so disable
+            logger -s "$0: BT PAN active -> disable"
+            nmcli c down $TARGET_BT_PAN_CONN_UUID
+          fi
+        elif $(nmcli -t -f UUID c show --active | grep -q $TARGET_BT_PAN_CONN_UUID); then
+          logger -s "$0: this is our BT PAN, do nothing"
+        else
+          # some unknown connection got activated
+          logger -s "$0: some werid conn is up ---$(eval "$ACTIVE_TYPES_WITH_PRIORITY_CMD")---)"
+        fi
+        ;;
+      down)
+        # reconnect BT PAN if no connection is active
+        logger -s "$0: $IF down"
+        if [[ $(eval "$ACTIVE_TYPES_WITH_PRIORITY_CMD" | wc -l) -eq 0 ]]; then
+          logger -s "$0: no other active iface with priority over BT PAN"
+          # only if we are not already connected to BT PAN
+          if ! $(nmcli -t -f UUID c show --active | grep -q $TARGET_BT_PAN_CONN_UUID); then
+            logger -s "$0: activating BT PAN"
+            nmcli c up $TARGET_BT_PAN_CONN_UUID
+          else
+            logger -s "$0: BT PAN already active"
+          fi
+        else
+          logger -s "$0: there are still some other active ifaces with priority over BT PAN"
+        fi
+        ;;
+      *)
+        ;;
+    esac
+    ;;
+esac
+
+
