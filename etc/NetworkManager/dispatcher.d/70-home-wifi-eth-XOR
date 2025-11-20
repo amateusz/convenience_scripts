@@ -1,36 +1,34 @@
 #!/bin/bash
 export LC_ALL=C
 
-TARGET_ETH_CON_UUID=42e4291b-b584-43f3-915b-8b2b991968ad
+TARGET_ETH_CONN_UUID=42e4291b-b584-43f3-915b-8b2b991968ad
+TARGET_WLAN_CONN_UUIDS=(01a18879-644d-4b35-81c6-d4b2b9d3eb83 bfad8431-caf3-4246-a7bf-b29b240bfea5)
 
 IF=$1
 STATUS=$2
 UUID=$CONNECTION_UUID
 
 case "$UUID" in
-  "$TARGET_ETH_CON_UUID")
+  "$TARGET_ETH_CONN_UUID")
     case "$STATUS" in
       up)
         logger -s "$0: home eth up"
         # disable connecting to home wifi
 
-        # disable home network #1
-        nmcli c modify 01a18879-644d-4b35-81c6-d4b2b9d3eb83 connection.autoconnect no
-        if $(nmcli -t -f UUID c show --active | grep -q 01a18879-644d-4b35-81c6-d4b2b9d3eb83); then
-          nmcli c down 01a18879-644d-4b35-81c6-d4b2b9d3eb83
-        fi
-
-        # disable home network #2 (this could be an array)
-        nmcli c modify bfad8431-caf3-4246-a7bf-b29b240bfea5 connection.autoconnect no
-        if $(nmcli -t -f UUID c show --active | grep -q bfad8431-caf3-4246-a7bf-b29b240bfea5); then
-          nmcli c down bfad8431-caf3-4246-a7bf-b29b240bfea5
-        fi
+        # disable home network(s)
+        for uuid in "${TARGET_WLAN_CONN_UUIDS[@]}"; do
+          nmcli c modify "$uuid" connection.autoconnect no
+          if $(nmcli -t -f UUID c show --active | grep -q "$uuid"); then
+            nmcli c down "$uuid"
+          fi
+        done
         ;;
       down)
         logger -s "$0: home eth down"
-        # enable connecting to home wifi
-        nmcli c modify 01a18879-644d-4b35-81c6-d4b2b9d3eb83 connection.autoconnect yes
-        nmcli c modify bfad8431-caf3-4246-a7bf-b29b240bfea5 connection.autoconnect yes
+        # enable connecting to home wifi(s)
+        for uuid in "${TARGET_WLAN_CONN_UUIDS[@]}"; do
+          nmcli c modify "$uuid" connection.autoconnect yes
+        done
         ;;
       *)
         ;;
