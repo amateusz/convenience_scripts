@@ -14,7 +14,7 @@ for BATTERY in `seq -f "BAT%g" 0 $(( $BATTERY_COUNT - 1 ))` ; do
 	if [ -e /sys/class/power_supply/$BATTERY/power_now ]; then
 		UWATTS=$(cat /sys/class/power_supply/$BATTERY/power_now)
 	else
-		UWATTS=$(( `cat /sys/class/power_supply/$BATTERY/voltage_now` * `cat /sys/class/power_supply/$BATTERY/current_now` / 1000000 ))
+		UWATTS=$(( $(cat /sys/class/power_supply/$BATTERY/voltage_now) * $(cat /sys/class/power_supply/$BATTERY/current_now) / 1000000 ))
 	fi
 	case $STATUS in
 		"Discharging")
@@ -23,7 +23,7 @@ for BATTERY in `seq -f "BAT%g" 0 $(( $BATTERY_COUNT - 1 ))` ; do
 		"Charging")
 			IDLE=false
 			EXTRA_CHARS='↑'
-			if [ "$BATTERY" = 'BAT0' && $BATTERY_COUNT -gt 1 ]; then EXTRA_CHARS="$EXTRA_CHARS wewn."; fi # "wewn." stands for "internal" in Polish
+			if [ "${BATTERY}" == 'BAT0' ] && [ $BATTERY_COUNT -gt 1 ]; then EXTRA_CHARS="${EXTRA_CHARS} wewn."; fi # "wewn." stands for "internal" in Polish
 			break;;
 		"Unknown")
 			continue;;
@@ -41,8 +41,8 @@ fi
 if $PLAIN; then
 	echo "$WATTS W $EXTRA_CHARS"
 else 
-	echo "$WATTS W $EXTRA_CHARS | size=11 font=ComicSansMS color=#eeee22"
-	echo "---"
-	echo "Kernel: $(uname -r) | iconName=system-settings iconName=applications-development"
+	echo "$WATTS W $EXTRA_CHARS | size=11 font=ComicSansMS color=#cc0099 terminal=false onclick=bash bash='kcmshell6 kcm_energyinfo'"
+	# echo "---"
+	# echo "Kernel: $(uname -r) | iconName=system-settings iconName=applications-development"
 	# echo "klawisz sutka | bash='sh -c /home/mateusz/programowanie/skrypciory/sutek_ps2_lewa.sh' onclick=bash terminal=false iconName=input-touchpad"
 fi
